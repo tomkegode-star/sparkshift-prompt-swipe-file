@@ -1,1 +1,988 @@
-<!-- placeholder -->
+<!--
+  SparkShift Prompt Swipe File
+  ============================
+  TO USE YOUR ACTUAL PNG LOGO:
+  1. Place your logo file (e.g. "sparkshift-logo.png") in the same folder as this file
+  2. Search for the two <svg viewBox="0 0 400 100" blocks and replace each with:
+     <img src="sparkshift-logo.png" alt="SparkShift" class="h-14 md:h-20 mx-auto mb-4">
+     (Use h-10 for the footer version)
+
+  DEPLOY TO VERCEL:
+  1. Push this file to a GitHub repo (or drag into Vercel dashboard)
+  2. No build step needed, it is a static HTML file
+  3. Tailwind CSS is loaded via CDN
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Prompt Swipe File | SparkShift</title>
+    <meta name="description" content="SparkShift's go-to AI prompts for leaders, coaches, and facilitators. Copy-paste prompts that actually work.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ss: {
+                            blue: '#1A8CFF',
+                            'blue-deep': '#1565C0',
+                            'blue-light': '#E8F4FF',
+                            'blue-border': '#B8DEFF',
+                            'blue-wash': '#F0F8FF',
+                            'blue-dot': '#90CAF9',
+                            dark: '#2D3436',
+                            body: '#636E72',
+                            border: '#E8F0F8',
+                            'bg-section': '#F7FAFC',
+                            white: '#FFFFFF',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'Arial', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    borderRadius: {
+                        'card': '16px',
+                        'button': '8px',
+                        'badge': '20px',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --ss-blue: #1A8CFF;
+            --ss-blue-deep: #1565C0;
+            --ss-blue-light: #E8F4FF;
+            --ss-blue-border: #B8DEFF;
+            --ss-blue-wash: #F0F8FF;
+            --ss-dark: #2D3436;
+            --ss-body: #636E72;
+            --ss-border: #E8F0F8;
+            --ss-bg-section: #F7FAFC;
+            --ss-font: 'Poppins', Arial, sans-serif;
+            --ss-radius-card: 16px;
+            --ss-radius-button: 8px;
+            --ss-radius-badge: 20px;
+        }
+        .reading-width { max-width: 65ch; }
+        .prompt-pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            cursor: pointer;
+            position: relative;
+            transition: box-shadow 0.2s;
+        }
+        .prompt-pre:hover {
+            box-shadow: 0 0 0 2px var(--ss-blue);
+        }
+        .prompt-pre .copy-hint {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--ss-blue);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: var(--ss-radius-badge);
+            opacity: 0;
+            transition: opacity 0.2s;
+            font-family: var(--ss-font);
+        }
+        .prompt-pre:hover .copy-hint {
+            opacity: 1;
+        }
+        .copied-flash {
+            animation: flash 0.6s ease;
+        }
+        @keyframes flash {
+            0% { box-shadow: 0 0 0 2px var(--ss-blue); }
+            50% { box-shadow: 0 0 0 4px rgba(26, 140, 255, 0.4); }
+            100% { box-shadow: 0 0 0 2px var(--ss-blue); }
+        }
+        .collapsible-content { display: none; }
+        .collapsible-content.open { display: block; }
+        .nav-link {
+            transition: color 0.15s, background 0.15s;
+        }
+        .nav-link:hover {
+            color: var(--ss-blue);
+            background: var(--ss-blue-light);
+        }
+        @media print {
+            .no-print { display: none !important; }
+            .prompt-pre { break-inside: avoid; }
+            section { break-inside: avoid; }
+        }
+        .avoid-break { break-inside: avoid; }
+        html { scroll-behavior: smooth; }
+        #back-to-top {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 50;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        #back-to-top.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        /* Section labels per style guide */
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--ss-blue);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+        }
+    </style>
+</head>
+<body class="bg-white text-ss-dark antialiased font-sans">
+
+    <!-- Print Button -->
+    <button onclick="window.print()" class="no-print fixed top-4 right-4 z-50 bg-white border-2 border-ss-border text-ss-body px-4 py-2 rounded-button text-sm font-medium hover:bg-ss-bg-section hover:shadow-md transition-all cursor-pointer">
+        Print / Save PDF
+    </button>
+
+    <!-- Back to Top -->
+    <button id="back-to-top" class="no-print bg-ss-blue text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:bg-ss-blue-deep transition-colors cursor-pointer" onclick="window.scrollTo({top:0})">
+        ↑
+    </button>
+
+    <!-- ===== HEADER ===== -->
+    <header class="bg-ss-blue text-white text-center py-16 px-6 relative overflow-hidden">
+        <div class="max-w-3xl mx-auto relative z-10">
+            <div class="mb-6">
+                <!-- Inline SVG SparkShift Logo (white on blue) -->
+                <svg viewBox="0 0 400 100" class="h-14 md:h-20 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg">
+                    <text x="10" y="62" font-family="Poppins, Arial, sans-serif" font-weight="800" font-size="60" fill="white" letter-spacing="6">SPARK</text>
+                    <g transform="translate(305, 8)">
+                        <polygon points="22,0 44,28 33,28 33,52 11,52 11,28 0,28" fill="white"/>
+                    </g>
+                    <text x="85" y="92" font-family="Poppins, Arial, sans-serif" font-weight="300" font-size="28" fill="white" letter-spacing="14">SHIFT</text>
+                </svg>
+                <p class="section-label text-blue-200">AI Prompt Toolkit</p>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-3 leading-tight">The Prompt Swipe File</h1>
+            <p class="text-lg text-blue-100 font-medium">AI for Leaders &amp; Teams</p>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-4 md:px-6 py-12">
+
+        <!-- Intro -->
+        <div class="mb-12 reading-width">
+            <p class="text-lg text-ss-body mb-4">
+                The prompts I actually copy-paste every day, including a "one-prompt setup" that gets your AI working like a colleague who already knows how you think.
+            </p>
+            <p class="text-ss-body text-sm">
+                See <a href="#principles" class="text-ss-blue underline">Prompting Principles</a> for a simple breakdown.
+            </p>
+        </div>
+
+        <!-- ===== TABLE OF CONTENTS ===== -->
+        <nav class="bg-white border-2 border-ss-border rounded-card p-6 md:p-8 mb-12">
+            <h2 class="text-lg font-bold text-ss-dark mb-4">Contents</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+                <a href="#quick-ref" class="nav-link flex items-center gap-2 py-1.5 px-3 rounded-button text-sm font-medium text-ss-dark">
+                    Quick Reference Table
+                </a>
+                <a href="#one-prompt" class="nav-link flex items-center gap-2 py-1.5 px-3 rounded-button text-sm font-medium text-ss-blue">
+                    ★ The One-Prompt Setup
+                </a>
+                <a href="#getting-started" class="nav-link flex items-center gap-2 py-1.5 px-3 rounded-button text-sm font-medium text-ss-dark">
+                    <span class="text-ss-body text-xs">1–4</span> Getting Started
+                </a>
+                <a href="#building" class="nav-link flex items-center gap-2 py-1.5 px-3 rounded-button text-sm font-medium text-ss-dark">
+                    <span class="text-ss-body text-xs">5–10</span> Building Things
+                </a>
+                <a href="#screenshots" class="nav-link flex items-center gap-2 py-1.5 px-3 rounded-button text-sm font-medium text-ss-dark">
+                    <span class="text-ss-body text-xs">11–14</span> From a Screenshot
+                </a>
+                <a href="#writing" class="nav-link flex items-center gap-2 py-1.5 px-3 rounded-button text-sm font-medium text-ss-dark">
+                    <span class="text-ss-body text-xs">15–19b</span> Writing &amp; Content
+                </a>
+                <a href="#data" class="nav-link flex items-center gap-2 py-1.5 px-3 rounded-button text-sm font-medium text-ss-dark">
+                    <span class="text-ss-body text-xs">20–23</span> Data &amp; Analysis
+                </a>
+                <a href="#automation" class="nav-link flex items-center gap-2 py-1.5 px-3 rounded-button text-sm font-medium text-ss-dark">
+                    <span class="text-ss-body text-xs">24–27</span> Automation
+                </a>
+                <a href="#debugging" class="nav-link flex items-center gap-2 py-1.5 px-3 rounded-button text-sm font-medium text-ss-dark">
+                    <span class="text-ss-body text-xs">28–32</span> Debugging
+                </a>
+                <a href="#exploration" class="nav-link flex items-center gap-2 py-1.5 px-3 rounded-button text-sm font-medium text-ss-dark">
+                    <span class="text-ss-body text-xs">33–38</span> Exploration
+                </a>
+                <a href="#magic-phrases" class="nav-link flex items-center gap-2 py-1.5 px-3 rounded-button text-sm font-medium text-ss-dark">
+                    Magic Phrases
+                </a>
+                <a href="#prompt-chains" class="nav-link flex items-center gap-2 py-1.5 px-3 rounded-button text-sm font-medium text-ss-dark">
+                    Prompt Chains
+                </a>
+                <a href="#principles" class="nav-link flex items-center gap-2 py-1.5 px-3 rounded-button text-sm font-medium text-ss-dark">
+                    <span class="text-ss-body text-xs">P1–8</span> Prompting Principles
+                </a>
+                <a href="#industry-packs" class="nav-link flex items-center gap-2 py-1.5 px-3 rounded-button text-sm font-medium text-ss-dark">
+                    Industry Prompt Packs
+                </a>
+            </div>
+        </nav>
+
+        <!-- ===== QUICK REFERENCE ===== -->
+        <section id="quick-ref" class="mb-16">
+            <p class="section-label mb-2">Quick Look</p>
+            <h2 class="text-2xl font-bold text-ss-dark mb-2">Quick Reference</h2>
+            <p class="text-ss-body mb-6">Find the prompt you need in 10 seconds. Grab it. Go.</p>
+            <div class="overflow-x-auto rounded-card border-2 border-ss-border">
+                <table class="w-full text-sm">
+                    <thead class="bg-ss-blue text-white">
+                        <tr>
+                            <th class="px-4 py-3 text-left font-semibold">#</th>
+                            <th class="px-4 py-3 text-left font-semibold">Prompt</th>
+                            <th class="px-4 py-3 text-left font-semibold">Category</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-ss-border">
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">-</td><td class="px-4 py-2"><a href="#one-prompt" class="text-ss-blue hover:underline font-medium">CLAUDE.md one-prompt setup</a></td><td class="px-4 py-2 text-ss-body">Setup (p.1)</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">1</td><td class="px-4 py-2"><a href="#getting-started" class="text-ss-blue hover:underline">"Interview me about what I need"</a></td><td class="px-4 py-2 text-ss-body">Getting Started</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">2</td><td class="px-4 py-2"><a href="#getting-started" class="text-ss-blue hover:underline">"Walk me through the plan in plain English"</a></td><td class="px-4 py-2 text-ss-body">Getting Started</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">3</td><td class="px-4 py-2"><a href="#getting-started" class="text-ss-blue hover:underline">"Where does it hurt?" Get solution options</a></td><td class="px-4 py-2 text-ss-body">Getting Started</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">4</td><td class="px-4 py-2"><a href="#getting-started" class="text-ss-blue hover:underline">"Here's my workday. Find the opportunity"</a></td><td class="px-4 py-2 text-ss-body">Getting Started</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">5</td><td class="px-4 py-2"><a href="#building" class="text-ss-blue hover:underline">"Build me a [thing]. Start simple"</a></td><td class="px-4 py-2 text-ss-body">Building</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">6</td><td class="px-4 py-2"><a href="#building" class="text-ss-blue hover:underline">Landing page from a wish list</a></td><td class="px-4 py-2 text-ss-body">Building</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">7</td><td class="px-4 py-2"><a href="#building" class="text-ss-blue hover:underline">Spreadsheet to dashboard</a></td><td class="px-4 py-2 text-ss-body">Building</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">8</td><td class="px-4 py-2"><a href="#building" class="text-ss-blue hover:underline">One small tool that does one thing</a></td><td class="px-4 py-2 text-ss-body">Building</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">9</td><td class="px-4 py-2"><a href="#building" class="text-ss-blue hover:underline">Add one feature to something that exists</a></td><td class="px-4 py-2 text-ss-body">Building</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">10</td><td class="px-4 py-2"><a href="#building" class="text-ss-blue hover:underline">Make it work on phones too</a></td><td class="px-4 py-2 text-ss-body">Building</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">11</td><td class="px-4 py-2"><a href="#screenshots" class="text-ss-blue hover:underline">"Make it look like this" + screenshot</a></td><td class="px-4 py-2 text-ss-body">Screenshots</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">12</td><td class="px-4 py-2"><a href="#screenshots" class="text-ss-blue hover:underline">"What's wrong?" + screenshot</a></td><td class="px-4 py-2 text-ss-body">Screenshots</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">13</td><td class="px-4 py-2"><a href="#screenshots" class="text-ss-blue hover:underline">Redesign: before + after screenshots</a></td><td class="px-4 py-2 text-ss-body">Screenshots</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">14</td><td class="px-4 py-2"><a href="#screenshots" class="text-ss-blue hover:underline">Build from a sketch or whiteboard photo</a></td><td class="px-4 py-2 text-ss-body">Screenshots</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">15</td><td class="px-4 py-2"><a href="#writing" class="text-ss-blue hover:underline">Teach Claude your writing voice</a></td><td class="px-4 py-2 text-ss-body">Writing</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">16</td><td class="px-4 py-2"><a href="#writing" class="text-ss-blue hover:underline">Content without AI smell</a></td><td class="px-4 py-2 text-ss-body">Writing</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">17</td><td class="px-4 py-2"><a href="#writing" class="text-ss-blue hover:underline">Make AI writing sound human</a></td><td class="px-4 py-2 text-ss-body">Writing</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">18</td><td class="px-4 py-2"><a href="#writing" class="text-ss-blue hover:underline">Business writing with a goal</a></td><td class="px-4 py-2 text-ss-body">Writing</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">19</td><td class="px-4 py-2"><a href="#writing" class="text-ss-blue hover:underline">Write a proposal</a></td><td class="px-4 py-2 text-ss-body">Writing</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">19b</td><td class="px-4 py-2"><a href="#writing" class="text-ss-blue hover:underline">Writing with source material</a></td><td class="px-4 py-2 text-ss-body">Writing</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">20</td><td class="px-4 py-2"><a href="#data" class="text-ss-blue hover:underline">"Explain this data like I'm smart but busy"</a></td><td class="px-4 py-2 text-ss-body">Data</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">21</td><td class="px-4 py-2"><a href="#data" class="text-ss-blue hover:underline">Find what I'm missing in this data</a></td><td class="px-4 py-2 text-ss-body">Data</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">22</td><td class="px-4 py-2"><a href="#data" class="text-ss-blue hover:underline">Compare two options objectively</a></td><td class="px-4 py-2 text-ss-body">Data</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">23</td><td class="px-4 py-2"><a href="#data" class="text-ss-blue hover:underline">Turn messy notes into structure</a></td><td class="px-4 py-2 text-ss-body">Data</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">24</td><td class="px-4 py-2"><a href="#automation" class="text-ss-blue hover:underline">"I do this every week. Automate it"</a></td><td class="px-4 py-2 text-ss-body">Automation</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">25</td><td class="px-4 py-2"><a href="#automation" class="text-ss-blue hover:underline">Connect two tools that don't talk</a></td><td class="px-4 py-2 text-ss-body">Automation</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">26</td><td class="px-4 py-2"><a href="#automation" class="text-ss-blue hover:underline">Batch process a folder of files</a></td><td class="px-4 py-2 text-ss-body">Automation</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">27</td><td class="px-4 py-2"><a href="#automation" class="text-ss-blue hover:underline">Build a monitoring/alert system</a></td><td class="px-4 py-2 text-ss-body">Automation</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">28</td><td class="px-4 py-2"><a href="#debugging" class="text-ss-blue hover:underline">"It's broken. Fix it"</a></td><td class="px-4 py-2 text-ss-body">Debugging</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">29</td><td class="px-4 py-2"><a href="#debugging" class="text-ss-blue hover:underline">"What does this error mean?"</a></td><td class="px-4 py-2 text-ss-body">Debugging</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">30</td><td class="px-4 py-2"><a href="#debugging" class="text-ss-blue hover:underline">"It was working yesterday"</a></td><td class="px-4 py-2 text-ss-body">Debugging</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">31</td><td class="px-4 py-2"><a href="#debugging" class="text-ss-blue hover:underline">"Start fresh. Rebuild it"</a></td><td class="px-4 py-2 text-ss-body">Debugging</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">32</td><td class="px-4 py-2"><a href="#debugging" class="text-ss-blue hover:underline">"What should I remember for next time?"</a></td><td class="px-4 py-2 text-ss-body">Debugging</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">33</td><td class="px-4 py-2"><a href="#exploration" class="text-ss-blue hover:underline">"Surprise me"</a></td><td class="px-4 py-2 text-ss-body">Exploration</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">34</td><td class="px-4 py-2"><a href="#exploration" class="text-ss-blue hover:underline">"What else could this do?"</a></td><td class="px-4 py-2 text-ss-body">Exploration</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">35</td><td class="px-4 py-2"><a href="#exploration" class="text-ss-blue hover:underline">"Red team this. Poke holes"</a></td><td class="px-4 py-2 text-ss-body">Exploration</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">36</td><td class="px-4 py-2"><a href="#exploration" class="text-ss-blue hover:underline">"Explain it to different audiences"</a></td><td class="px-4 py-2 text-ss-body">Exploration</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">37</td><td class="px-4 py-2"><a href="#exploration" class="text-ss-blue hover:underline">"Future-proof this"</a></td><td class="px-4 py-2 text-ss-body">Exploration</td></tr>
+                        <tr class="hover:bg-ss-blue-light"><td class="px-4 py-2 text-ss-body">38</td><td class="px-4 py-2"><a href="#exploration" class="text-ss-blue hover:underline">"I need to make a decision"</a></td><td class="px-4 py-2 text-ss-body">Exploration</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ===== THE ONE-PROMPT SETUP ===== -->
+        <section id="one-prompt" class="mb-16">
+            <div class="bg-white border-2 border-ss-blue rounded-card p-6 md:p-8">
+                <p class="section-label mb-2">Most Valuable</p>
+                <h2 class="text-2xl font-bold text-ss-dark mb-2">The One-Prompt Setup</h2>
+                <p class="text-ss-body reading-width mb-4">
+                    This is the single most valuable thing in this entire guide. A CLAUDE.md file is a set of permanent instructions that Claude reads every time it starts a new conversation. Think of it as a briefing document. You write it once, and Claude remembers it forever.
+                </p>
+                <p class="text-ss-body reading-width mb-6">
+                    Below is a real CLAUDE.md, annotated so you can see what each section does and adapt it for your own work.
+                </p>
+
+                <h3 class="text-lg font-bold text-ss-dark mb-3">A Real CLAUDE.md (Annotated)</h3>
+                <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark mb-4"># Claude Code Global Instructions
+
+## Windows Environment
+- File tools: Use backslashes (C:\Users\Charles\...)
+- Expand ~ to C:\Users\Charles
+- Shell: PowerShell 7 (pwsh.exe)<span class="copy-hint">Click to copy</span></pre>
+
+                <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark mb-4">## Terminal Output
+Working: Blockquotes (>), Tables, Lists, Horizontal rules
+Not working: Headers, bold, italic, inline code<span class="copy-hint">Click to copy</span></pre>
+
+                <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark mb-4">## Browser Tools
+- Default: Use Playwright for web browsing
+- Each project can override this in its own CLAUDE.md<span class="copy-hint">Click to copy</span></pre>
+            </div>
+        </section>
+
+        <!-- ===== GETTING STARTED ===== -->
+        <section id="getting-started" class="mb-16">
+            <p class="section-label mb-2">Prompts 1–4</p>
+            <h2 class="text-2xl font-bold text-ss-dark mb-6">Getting Started</h2>
+
+            <div class="space-y-6">
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">1</span>
+                        <h3 class="font-semibold text-ss-dark">"Interview me about what I need"</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Interview me about what I need. Ask me as many questions as you can to understand my situation, my goals, what I've tried before, and what "done" looks like for me. Don't start building until you've asked at least 10 questions.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">2</span>
+                        <h3 class="font-semibold text-ss-dark">"Walk me through the plan in plain English"</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">I'm building [describe your thing] for [describe your audience]. I'm not technical. Walk me through what we need to build, step by step, in plain English. Don't build anything yet. Just explain the plan.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">3</span>
+                        <h3 class="font-semibold text-ss-dark">"Where does it hurt?" Get solution options</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">I run a [type of business]. My biggest daily frustration is [describe the pain point]. What could you build me to fix this? Give me 3-5 options, ranked by how quickly I could get each one working.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">4</span>
+                        <h3 class="font-semibold text-ss-dark">"Here's my workday. Find the opportunity"</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Here's what my typical workday looks like: [describe your day, meetings, emails, tasks, etc.]. Where are the biggest opportunities to save time or reduce friction using AI? Be specific. Don't just say "automate things."<span class="copy-hint">Click to copy</span></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== BUILDING THINGS ===== -->
+        <section id="building" class="mb-16">
+            <p class="section-label mb-2">Prompts 5–10</p>
+            <h2 class="text-2xl font-bold text-ss-dark mb-6">Building Things</h2>
+
+            <div class="space-y-6">
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">5</span>
+                        <h3 class="font-semibold text-ss-dark">"Build me a [thing]. Start simple"</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Build me a [describe what you want]. Start with the simplest version that actually works. I don't need it to be perfect. I need it to exist. We'll improve it later.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">6</span>
+                        <h3 class="font-semibold text-ss-dark">Landing page from a wish list</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Build me a landing page for [your thing]. Here's what I want on it: [list everything, headline, features, testimonials, pricing, CTA]. Make it look professional. I don't have a designer.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">7</span>
+                        <h3 class="font-semibold text-ss-dark">Spreadsheet to dashboard</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Here's a spreadsheet I use to track [what you track]. Turn this into an interactive dashboard where I can see [what you want to see]. Add filters for [what matters to you].<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">8</span>
+                        <h3 class="font-semibold text-ss-dark">One small tool that does one thing</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Build me a simple tool that does exactly one thing: [describe the task]. No login, no database, no complexity. Just a single page that [does the thing].<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">9</span>
+                        <h3 class="font-semibold text-ss-dark">Add one feature to something that exists</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">I already have [describe what exists]. I want to add [one specific feature]. Don't rebuild anything. Just add the new thing to what's already there.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">10</span>
+                        <h3 class="font-semibold text-ss-dark">Make it work on phones too</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Make this work on phones, tablets, and desktops. Test it at different sizes and fix anything that breaks.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== FROM A SCREENSHOT ===== -->
+        <section id="screenshots" class="mb-16">
+            <p class="section-label mb-2">Prompts 11–14</p>
+            <h2 class="text-2xl font-bold text-ss-dark mb-2">From a Screenshot</h2>
+            <p class="text-ss-body reading-width mb-6">Stop describing what you want with words when you can just show Claude the thing. Drag and drop is worth a thousand words.</p>
+
+            <div class="space-y-6">
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">11</span>
+                        <h3 class="font-semibold text-ss-dark">"Make it look like this" + screenshot</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Make it look like this.
+[drag and drop a screenshot into the chat]<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">12</span>
+                        <h3 class="font-semibold text-ss-dark">"What's wrong?" + screenshot</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Here's a screenshot of what I'm seeing.
+[drag and drop]
+What's wrong and how do we fix it?<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">13</span>
+                        <h3 class="font-semibold text-ss-dark">Redesign: before + after screenshots</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Here's my current [website/dashboard/tool].
+[drag and drop a screenshot]
+I want it to look more like this:
+[drag and drop a second screenshot]
+Keep the content, change the design.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">14</span>
+                        <h3 class="font-semibold text-ss-dark">Build from a sketch or whiteboard photo</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">I sketched this on paper / on a whiteboard.
+[drag and drop a photo]
+Build this for me. Interpret my terrible drawing as best you can.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== WRITING & CONTENT ===== -->
+        <section id="writing" class="mb-16">
+            <p class="section-label mb-2">Prompts 15–19b</p>
+            <h2 class="text-2xl font-bold text-ss-dark mb-6">Writing &amp; Content</h2>
+
+            <div class="space-y-6">
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">15</span>
+                        <h3 class="font-semibold text-ss-dark">Teach Claude your writing voice</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Here are 5 examples of my real writing:
+
+[paste actual emails, blog posts, social media posts, or anything you've written yourself]
+
+Study my voice. Notice my sentence length, my quirks, my tone. Write everything from now on in this voice.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">16</span>
+                        <h3 class="font-semibold text-ss-dark">Content without AI smell</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Write a [type of content] about [topic] for [audience]. Keep it [tone: friendly, professional, direct, warm]. Avoid these words and phrases: "delve", "I'd be happy to", "in today's rapidly evolving", "comprehensive", "leverage", "unlock", "game-changer", "let's dive in."<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">17</span>
+                        <h3 class="font-semibold text-ss-dark">Make AI writing sound human</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Rewrite this so it sounds like a human wrote it. Less corporate, more conversational. Short sentences. Cut anything that sounds like filler.
+
+[paste the text]<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">18</span>
+                        <h3 class="font-semibold text-ss-dark">Business writing with a goal</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Write a [email / LinkedIn post / newsletter / proposal] to [audience] about [topic]. The goal is to [what you want them to do after reading]. Keep it under [word count]. One idea per paragraph.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">19</span>
+                        <h3 class="font-semibold text-ss-dark">Write a proposal</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">I need to write a proposal for [client/project]. Here's what I know so far: [dump everything, notes, emails, brief]. Turn this into a structured proposal with sections for: problem, approach, outcomes, timeline, and pricing.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">19b</span>
+                        <h3 class="font-semibold text-ss-dark">Writing with source material</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Here are my notes / transcript / research: [paste or attach]. Write a [blog post / report / article] based on this. Use my ideas and examples, not generic filler. Keep my voice.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== DATA & ANALYSIS ===== -->
+        <section id="data" class="mb-16">
+            <p class="section-label mb-2">Prompts 20–23</p>
+            <h2 class="text-2xl font-bold text-ss-dark mb-6">Data &amp; Analysis</h2>
+
+            <div class="space-y-6">
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">20</span>
+                        <h3 class="font-semibold text-ss-dark">"Explain this data like I'm smart but busy"</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Here's a [spreadsheet / report / data dump]. Explain what it's telling me. I'm smart but busy. Skip the methodology and give me the "so what?" Summary first, then the interesting details.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">21</span>
+                        <h3 class="font-semibold text-ss-dark">Find what I'm missing in this data</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Look at this data and tell me something I probably haven't noticed. Patterns, outliers, correlations, things that don't add up. Surprise me with something useful.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">22</span>
+                        <h3 class="font-semibold text-ss-dark">Compare two options objectively</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">I'm deciding between [Option A] and [Option B]. Compare them objectively across [criteria that matter to you]. Give me a recommendation at the end, but show your reasoning.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">23</span>
+                        <h3 class="font-semibold text-ss-dark">Turn messy notes into structure</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Here are my messy notes from [meeting / brainstorm / research]. Organise them into something useful. Group related ideas. Flag the most important points. Remove the fluff.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== AUTOMATION ===== -->
+        <section id="automation" class="mb-16">
+            <p class="section-label mb-2">Prompts 24–27</p>
+            <h2 class="text-2xl font-bold text-ss-dark mb-6">Automation</h2>
+
+            <div class="space-y-6">
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">24</span>
+                        <h3 class="font-semibold text-ss-dark">"I do this every week. Automate it"</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Every [time period] I have to [describe the repetitive task]. It takes me [how long] and I hate it. Automate as much of this as possible. Walk me through how to set it up.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">25</span>
+                        <h3 class="font-semibold text-ss-dark">Connect two tools that don't talk</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">I use [Tool A] for [purpose] and [Tool B] for [purpose]. Right now I manually [describe the manual process]. Build me something that connects them. When [trigger in Tool A], automatically [action in Tool B].<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">26</span>
+                        <h3 class="font-semibold text-ss-dark">Batch process a folder of files</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">I have a folder of [file type] files. I need to [describe what needs to happen to each one]. Do all of them, not just one. Show me the results when you're done.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">27</span>
+                        <h3 class="font-semibold text-ss-dark">Build a monitoring/alert system</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">I need to keep track of [what you're monitoring]. Build me something that checks [source] every [time period] and alerts me when [condition]. Keep it simple. I just need to know when something changes.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== DEBUGGING ===== -->
+        <section id="debugging" class="mb-16">
+            <p class="section-label mb-2">Prompts 28–32</p>
+            <h2 class="text-2xl font-bold text-ss-dark mb-6">Debugging</h2>
+
+            <div class="space-y-6">
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">28</span>
+                        <h3 class="font-semibold text-ss-dark">"It's broken. Fix it"</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">This isn't working. It's doing [what's happening] but I want it to do [what should be happening]. Fix it.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">29</span>
+                        <h3 class="font-semibold text-ss-dark">"What does this error mean?"</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">This error keeps appearing:
+
+[paste the error message]
+
+I don't know what it means. Fix it and explain what happened in plain English.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">30</span>
+                        <h3 class="font-semibold text-ss-dark">"It was working yesterday"</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">This was working yesterday and now it isn't. I didn't change anything. What happened and how do we fix it?<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">31</span>
+                        <h3 class="font-semibold text-ss-dark">"Start fresh. Rebuild it"</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">I've been going back and forth with you trying to fix this and it's not getting better. Let's start fresh. Here's what I want: [describe the end goal]. Build it again from scratch.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">32</span>
+                        <h3 class="font-semibold text-ss-dark">"What should I remember for next time?"</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">That fixed it. What was the problem? What should I add to my CLAUDE.md instructions so we don't hit this again?<span class="copy-hint">Click to copy</span></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== EXPLORATION ===== -->
+        <section id="exploration" class="mb-16">
+            <p class="section-label mb-2">Prompts 33–38</p>
+            <h2 class="text-2xl font-bold text-ss-dark mb-6">Exploration</h2>
+
+            <div class="space-y-6">
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">33</span>
+                        <h3 class="font-semibold text-ss-dark">"Surprise me"</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Surprise me. Build something you think would be useful for someone who runs a [type of business].<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">34</span>
+                        <h3 class="font-semibold text-ss-dark">"What else could this do?"</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">What else could this do? I've got [what you've built so far]. What features am I not thinking of? Give me 5 ideas ranked by impact.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">35</span>
+                        <h3 class="font-semibold text-ss-dark">"Red team this. Poke holes"</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Red team this. Pretend you're a sceptical customer / investor / competitor. What are the weaknesses? Where would you attack? What am I not seeing?<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">36</span>
+                        <h3 class="font-semibold text-ss-dark">"Explain it to different audiences"</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Explain [your thing] three ways: once for a potential customer who's never heard of it, once for a technical team who'll build on it, and once for an executive who just wants the bottom line.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">37</span>
+                        <h3 class="font-semibold text-ss-dark">"Future-proof this"</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Look at what I've built. What breaks if I get 10x more users? 100x? What should I fix now before it becomes a problem?<span class="copy-hint">Click to copy</span></pre>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <div class="flex items-baseline gap-3 mb-3">
+                        <span class="shrink-0 bg-ss-blue text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full">38</span>
+                        <h3 class="font-semibold text-ss-dark">"I need to make a decision"</h3>
+                    </div>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">I need to decide between [options]. Here's my situation: [context]. Help me think through this. Don't just list pros and cons. Tell me what you'd actually do and why.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== MAGIC PHRASES ===== -->
+        <section id="magic-phrases" class="mb-16">
+            <p class="section-label mb-2">Quick Wins</p>
+            <h2 class="text-2xl font-bold text-ss-dark mb-2">Magic Phrases</h2>
+            <p class="text-ss-body reading-width mb-2">These aren't full prompts. They're short sentences, sometimes just a few words, that consistently make Claude work better. I use these more than anything else.</p>
+            <p class="text-ss-body reading-width mb-6">Think of these as steering-wheel adjustments. Small turns, big difference.</p>
+
+            <div class="space-y-4">
+                <div class="avoid-break flex flex-col md:flex-row gap-3 items-start bg-white border-2 border-ss-border rounded-card p-5">
+                    <span class="shrink-0 bg-ss-blue text-white px-3 py-1 rounded-badge text-sm font-semibold">"Use your best judgment."</span>
+                    <p class="text-ss-body text-sm reading-width">When you're stuck or don't know what to decide. Claude asks "do you want me to use approach A or approach B?" and you don't know the difference. Just say this. Let it decide.</p>
+                </div>
+
+                <div class="avoid-break flex flex-col md:flex-row gap-3 items-start bg-white border-2 border-ss-border rounded-card p-5">
+                    <span class="shrink-0 bg-ss-blue text-white px-3 py-1 rounded-badge text-sm font-semibold">"Interview me about what I need."</span>
+                    <p class="text-ss-body text-sm reading-width">When you don't know where to start. When you've got a fuzzy idea in your head but can't articulate it. Let Claude ask the questions.</p>
+                </div>
+
+                <div class="avoid-break flex flex-col md:flex-row gap-3 items-start bg-white border-2 border-ss-border rounded-card p-5">
+                    <span class="shrink-0 bg-ss-blue text-white px-3 py-1 rounded-badge text-sm font-semibold">"No, I'm pretty sure you can."</span>
+                    <p class="text-ss-body text-sm reading-width">Works brilliantly for websites, marketing funnels, business processes, contracts, content strategies. Anything where you know the destination but not the route.</p>
+                </div>
+
+                <div class="avoid-break flex flex-col md:flex-row gap-3 items-start bg-white border-2 border-ss-border rounded-card p-5">
+                    <span class="shrink-0 bg-ss-blue text-white px-3 py-1 rounded-badge text-sm font-semibold">"No, you do it."</span>
+                    <p class="text-ss-body text-sm reading-width">When Claude tells you it can't do something. Claude defaults to saying "no" as a safety measure, not because it's actually incapable. Push back.</p>
+                </div>
+
+                <div class="avoid-break flex flex-col md:flex-row gap-3 items-start bg-white border-2 border-ss-border rounded-card p-5">
+                    <span class="shrink-0 bg-ss-blue text-white px-3 py-1 rounded-badge text-sm font-semibold">"Don't ask. Just do it."</span>
+                    <p class="text-ss-body text-sm reading-width">When Claude keeps checking in with you. Some tasks don't need a committee. Give permission to act autonomously.</p>
+                </div>
+
+                <div class="avoid-break flex flex-col md:flex-row gap-3 items-start bg-white border-2 border-ss-border rounded-card p-5">
+                    <span class="shrink-0 bg-ss-blue text-white px-3 py-1 rounded-badge text-sm font-semibold">"Pretend I'm not technical."</span>
+                    <p class="text-ss-body text-sm reading-width">The universal translator. Add this to any request and Claude shifts from jargon to clarity.</p>
+                </div>
+
+                <div class="avoid-break flex flex-col md:flex-row gap-3 items-start bg-white border-2 border-ss-border rounded-card p-5">
+                    <span class="shrink-0 bg-ss-blue text-white px-3 py-1 rounded-badge text-sm font-semibold">"What would you do?"</span>
+                    <p class="text-ss-body text-sm reading-width">When you want an opinion, not just options. Claude can be surprisingly good at making judgment calls when you give it permission.</p>
+                </div>
+
+                <div class="avoid-break flex flex-col md:flex-row gap-3 items-start bg-white border-2 border-ss-border rounded-card p-5">
+                    <span class="shrink-0 bg-ss-blue text-white px-3 py-1 rounded-badge text-sm font-semibold">"Be honest. Is this good?"</span>
+                    <p class="text-ss-body text-sm reading-width">Claude defaults to being encouraging. Sometimes you need the truth. This phrase gives it permission to be critical.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== PROMPT CHAINS ===== -->
+        <section id="prompt-chains" class="mb-16">
+            <p class="section-label mb-2">Workflows</p>
+            <h2 class="text-2xl font-bold text-ss-dark mb-2">Prompt Chains</h2>
+            <p class="text-ss-body reading-width mb-6">Single prompts are great. But the real momentum happens when you chain them. The output of one becomes the input of the next. Each step builds on the last.</p>
+
+            <!-- Chain 1 -->
+            <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6 mb-6">
+                <h3 class="font-bold text-ss-dark mb-4">Chain 1: Client Onboarding</h3>
+                <div class="space-y-3">
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Interview me about my new client [name]. Ask me everything you'd need to know to scope a project for them.<span class="copy-hint">Click to copy</span></pre>
+                    <p class="text-ss-body text-sm pl-4 border-l-2 border-ss-blue">→ What you get: Structured notes from the interview. All the important details pulled out of your head and organised.</p>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Now turn that into a scope document. Include outcomes, timeline, and what's out of scope.<span class="copy-hint">Click to copy</span></pre>
+                    <p class="text-ss-body text-sm pl-4 border-l-2 border-ss-blue">→ What you get: A professional scope doc you'd normally spend an hour writing.</p>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Write a proposal email to [client name] based on that scope. Keep it warm but professional.<span class="copy-hint">Click to copy</span></pre>
+                    <p class="text-ss-body text-sm pl-4 border-l-2 border-ss-blue">→ What you get: A ready-to-send proposal email that sounds like you, not a robot.</p>
+                </div>
+            </div>
+
+            <!-- Chain 2 -->
+            <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6 mb-6">
+                <h3 class="font-bold text-ss-dark mb-4">Chain 2: Content Pipeline</h3>
+                <div class="space-y-3">
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Interview me about [topic I know well]. Ask me questions until you've got enough for a solid blog post.<span class="copy-hint">Click to copy</span></pre>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Now write the blog post based on that conversation. Use my voice, my examples, my opinions.<span class="copy-hint">Click to copy</span></pre>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Now create 5 social media posts that promote this article. Different angles, different hooks.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+            </div>
+
+            <!-- Chain 3 -->
+            <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6 mb-6">
+                <h3 class="font-bold text-ss-dark mb-4">Chain 3: Strategy Sprint</h3>
+                <div class="space-y-3">
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Interview me about my business. Ask me about my customers, revenue, challenges, and goals.<span class="copy-hint">Click to copy</span></pre>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Based on that, identify the 3 highest-impact opportunities I should focus on. For each one, give me a 30-day action plan.<span class="copy-hint">Click to copy</span></pre>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Now build me a simple tracking dashboard where I can mark progress on each action item.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+            </div>
+
+            <!-- Chain 4 -->
+            <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6 mb-6">
+                <h3 class="font-bold text-ss-dark mb-4">Chain 4: Data → Decisions</h3>
+                <div class="space-y-3">
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Here's my data. [attach file] Tell me what story it's telling. Plain English, no jargon.<span class="copy-hint">Click to copy</span></pre>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Now turn the key findings into a visual dashboard I can share with my team.<span class="copy-hint">Click to copy</span></pre>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Write a summary email I can send to my team. Plain English, no jargon. Here's what the data says, here's what we should do about it.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+            </div>
+
+            <!-- Chain 5 -->
+            <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                <h3 class="font-bold text-ss-dark mb-4">Chain 5: Debug and Learn</h3>
+                <div class="space-y-3">
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">It's broken. [paste error or describe problem]. Fix it.<span class="copy-hint">Click to copy</span></pre>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Now explain what went wrong. Pretend I'm smart but not technical. What actually happened?<span class="copy-hint">Click to copy</span></pre>
+                    <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Add a lesson learned to my CLAUDE.md so this doesn't happen again.<span class="copy-hint">Click to copy</span></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== PROMPTING PRINCIPLES ===== -->
+        <section id="principles" class="mb-16">
+            <p class="section-label mb-2">P1–P8</p>
+            <h2 class="text-2xl font-bold text-ss-dark mb-2">Prompting Principles</h2>
+            <p class="text-ss-body reading-width mb-6">The rules behind the prompts. Understanding these will make every prompt you write, including your own, work better.</p>
+
+            <div class="space-y-4">
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <h3 class="font-bold text-ss-dark mb-2">P1: Start with the end</h3>
+                    <p class="text-ss-body text-sm reading-width">Tell Claude what "done" looks like before you tell it what to do. "I want a one-page summary" beats "summarise this" every time.</p>
+                </div>
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <h3 class="font-bold text-ss-dark mb-2">P2: Show, don't describe</h3>
+                    <p class="text-ss-body text-sm reading-width">A screenshot beats a paragraph. An example beats an explanation. Paste in what you like. Drag in what you want. Claude works from examples better than instructions.</p>
+                </div>
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <h3 class="font-bold text-ss-dark mb-2">P3: One thing at a time</h3>
+                    <p class="text-ss-body text-sm reading-width">Don't ask Claude to build a website, write copy, and design a logo in the same breath. Stack small wins. Each prompt builds on the last.</p>
+                </div>
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <h3 class="font-bold text-ss-dark mb-2">P4: Give context, not instructions</h3>
+                    <p class="text-ss-body text-sm reading-width">"I run a coaching business with 12 clients" gives Claude more to work with than "write something professional." Context creates quality.</p>
+                </div>
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <h3 class="font-bold text-ss-dark mb-2">P5: Say what you don't want</h3>
+                    <p class="text-ss-body text-sm reading-width">Blacklists work. "Don't use jargon." "No bullet points." "Avoid the word 'delve.'" Removing bad habits is faster than describing good ones.</p>
+                </div>
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <h3 class="font-bold text-ss-dark mb-2">P6: Let Claude ask questions</h3>
+                    <p class="text-ss-body text-sm reading-width">"Interview me" is the most underrated prompt. Let Claude do the thinking about what it needs to know. You'd be surprised how good its questions are.</p>
+                </div>
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <h3 class="font-bold text-ss-dark mb-2">P7: Build in public with Claude</h3>
+                    <p class="text-ss-body text-sm reading-width">Don't try to get it perfect in one go. Ship something rough, then iterate. "Make this better" is a perfectly valid prompt.</p>
+                </div>
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card p-6">
+                    <h3 class="font-bold text-ss-dark mb-2">P8: Save what works</h3>
+                    <p class="text-ss-body text-sm reading-width">When a prompt works well, save it. Put it in your CLAUDE.md. Build a library. Your future self will thank you.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== INDUSTRY PROMPT PACKS ===== -->
+        <section id="industry-packs" class="mb-16">
+            <p class="section-label mb-2">Tailored</p>
+            <h2 class="text-2xl font-bold text-ss-dark mb-2">Industry Prompt Packs</h2>
+            <p class="text-ss-body reading-width mb-6">Tailored prompt collections for specific industries. Click to expand.</p>
+
+            <div class="space-y-3">
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card">
+                    <button class="collapsible-toggle w-full text-left px-6 py-4 font-semibold text-ss-dark flex justify-between items-center cursor-pointer" onclick="this.nextElementSibling.classList.toggle('open'); this.querySelector('.chevron').classList.toggle('rotate-180')">
+                        Coaches &amp; Consultants
+                        <span class="chevron transition-transform text-ss-body">▼</span>
+                    </button>
+                    <div class="collapsible-content px-6 pb-6">
+                        <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark mb-3">Build me a client intake form that captures: goals, challenges, timeline, budget, and previous experience with coaching. Make it feel warm, not clinical.<span class="copy-hint">Click to copy</span></pre>
+                        <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark mb-3">I just finished a coaching session. Here are my raw notes: [paste]. Turn these into a structured session summary with action items for the client.<span class="copy-hint">Click to copy</span></pre>
+                        <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Help me create a 90-day coaching programme outline for [type of client]. Include milestones, session topics, and homework between sessions.<span class="copy-hint">Click to copy</span></pre>
+                    </div>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card">
+                    <button class="collapsible-toggle w-full text-left px-6 py-4 font-semibold text-ss-dark flex justify-between items-center cursor-pointer" onclick="this.nextElementSibling.classList.toggle('open'); this.querySelector('.chevron').classList.toggle('rotate-180')">
+                        Agencies &amp; Freelancers
+                        <span class="chevron transition-transform text-ss-body">▼</span>
+                    </button>
+                    <div class="collapsible-content px-6 pb-6">
+                        <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark mb-3">Write a project proposal for [client] based on these notes: [paste]. Include scope, timeline, outcomes, and pricing. Keep it professional but human.<span class="copy-hint">Click to copy</span></pre>
+                        <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark mb-3">I need to scope a [type of project] for a client with a budget of [amount]. What can I realistically deliver? Break it into phases.<span class="copy-hint">Click to copy</span></pre>
+                        <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Build me a client reporting template that shows progress, next steps, and results. Make it visual. No one reads dense paragraphs.<span class="copy-hint">Click to copy</span></pre>
+                    </div>
+                </div>
+
+                <div class="avoid-break bg-white border-2 border-ss-border rounded-card">
+                    <button class="collapsible-toggle w-full text-left px-6 py-4 font-semibold text-ss-dark flex justify-between items-center cursor-pointer" onclick="this.nextElementSibling.classList.toggle('open'); this.querySelector('.chevron').classList.toggle('rotate-180')">
+                        Leaders &amp; People Managers
+                        <span class="chevron transition-transform text-ss-body">▼</span>
+                    </button>
+                    <div class="collapsible-content px-6 pb-6">
+                        <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark mb-3">I need to have a difficult conversation with a team member about [situation]. Help me plan what to say. Keep it direct but kind.<span class="copy-hint">Click to copy</span></pre>
+                        <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark mb-3">Write a team update email about [project/change]. Be transparent about challenges, clear on next steps, and motivating without being cheesy.<span class="copy-hint">Click to copy</span></pre>
+                        <pre class="prompt-pre bg-ss-bg-section border-2 border-ss-border rounded-card p-4 text-sm font-mono text-ss-dark">Help me design a team offsite agenda for [number] people, [duration]. Goal is [what you want to achieve]. Mix strategic work with team building.<span class="copy-hint">Click to copy</span></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="bg-ss-dark text-white py-12 px-6">
+        <div class="max-w-3xl mx-auto text-center">
+            <div class="mb-4">
+                <svg viewBox="0 0 400 100" class="h-10 mx-auto mb-3" xmlns="http://www.w3.org/2000/svg">
+                    <text x="10" y="62" font-family="Poppins, Arial, sans-serif" font-weight="800" font-size="60" fill="white" letter-spacing="6">SPARK</text>
+                    <g transform="translate(305, 8)">
+                        <polygon points="22,0 44,28 33,28 33,52 11,52 11,28 0,28" fill="white"/>
+                    </g>
+                    <text x="85" y="92" font-family="Poppins, Arial, sans-serif" font-weight="300" font-size="28" fill="white" letter-spacing="14">SHIFT</text>
+                </svg>
+            </div>
+            <p class="text-sm mb-4" style="color: #636E72;">Leadership sprints, coaching &amp; facilitation for organisations ready to move.</p>
+            <div class="flex justify-center gap-6 mb-6">
+                <a href="https://sparkshift.pro" class="text-ss-blue hover:text-white text-sm transition-colors">sparkshift.pro</a>
+                <a href="https://calendly.com/tom-sparkshift/25min" class="text-ss-blue hover:text-white text-sm transition-colors">Book a Call</a>
+                <a href="https://tomkegode.substack.com" class="text-ss-blue hover:text-white text-sm transition-colors">Newsletter</a>
+            </div>
+            <p class="text-xs" style="color: #636E72;">&copy; 2026 SparkShift. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        // Copy to clipboard on click
+        document.querySelectorAll('.prompt-pre').forEach(pre => {
+            pre.addEventListener('click', async () => {
+                const text = pre.textContent.replace('Click to copy', '').trim();
+                try {
+                    await navigator.clipboard.writeText(text);
+                    pre.classList.add('copied-flash');
+                    const hint = pre.querySelector('.copy-hint');
+                    if (hint) {
+                        hint.textContent = 'Copied!';
+                        hint.style.opacity = '1';
+                        setTimeout(() => {
+                            hint.textContent = 'Click to copy';
+                            hint.style.opacity = '';
+                            pre.classList.remove('copied-flash');
+                        }, 1500);
+                    }
+                } catch (err) {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                }
+            });
+        });
+
+        // Back to top visibility
+        const backToTop = document.getElementById('back-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+    </script>
+</body>
+</html>
